@@ -2,7 +2,7 @@ For a detailed description of the proposed method, including the motivation, fra
 
 If you find this repository helpful in your research or use our code in your work, please kindly cite our paper:
 ```bibtex
-@ARTICLE{11417191,
+@ARTICLE{cheng2026lka,
   author={Cheng, Wei and Li, Ruyi and Zhu, Junheng and Wang, Xianghai},
   journal={IEEE Transactions on Geoscience and Remote Sensing}, 
   title={LKA-GFNet: Language Knowledge-Augmented Graph Fusion for Tri-Source Heterogeneous Remote Sensing Data Classification}, 
