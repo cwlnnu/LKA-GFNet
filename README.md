@@ -12,5 +12,4 @@ If you find this repository helpful in your research or use our code in your wor
   volume={64},
   number={},
   pages={1-19},
-  keywords={Semantics;Laser radar;Visualization;Transformers;Systematics;Linguistics;Land surface;Correlation;Compounds;Electronic mail;Fusion classification;graph fusion;language knowledge;semantic priors;tri-source remote sensing (RS) data},
   doi={10.1109/TGRS.2026.3668976}}
