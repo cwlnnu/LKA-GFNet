@@ -86,20 +86,30 @@ def get_dataset(dataset_name):
                         "pastures", "forests", "shrub", "open spaces with no vegetation",
                         "inland wetlands"]
 
+    elif dataset_name == 'Wuhan':
+        DataPath1 = './data/Wuhan_new/Wuhan_HS_new.mat'
+        DataPath2 = './data/Wuhan_new/Wuhan_MS_new.mat'
+        DataPath3 = './data/Wuhan_new/Wuhan_SAR_new.mat'
+        Label_train = './data/Wuhan_new/Wuhan_train_new.mat'
+        Label_test = './data/Wuhan_new/Wuhan_test_new.mat'
+        Data1 = loadmat(DataPath1)['Wuhan_HS']
+        Data2 = loadmat(DataPath2)['Wuhan_MS']
+        Data3 = loadmat(DataPath3)['Wuhan_SAR']
+        gt_train = loadmat(Label_train)['Wuhan_train']
+        gt_test = loadmat(Label_test)['Wuhan_test']
+
+        label_name = ["surface water", "street network", "urban fabric",
+                      "industrial, commercial, and transport",
+                      "mine, dump, and construction sites", "artificial vegetated areas",
+                      "arable land", "permanent crops",
+                      "pastures", "forests", "shrub", "open spaces with no vegetation",
+                      "inland wetlands"]
+
     Data1 = (Data1 - np.min(Data1)) / (np.max(Data1) - np.min(Data1))
     Data2 = (Data2 - np.min(Data2)) / (np.max(Data2) - np.min(Data2))
     Data3 = (Data3 - np.min(Data3)) / (np.max(Data3) - np.min(Data3))
 
     return Data1, Data2, Data3, gt_train, gt_test, label_name
-
-def normalize(input2):
-    input2_normalize = np.zeros(input2.shape)
-    for i in range(input2.shape[2]):
-        input2_max = np.max(input2[:, :, i])
-        input2_min = np.min(input2[:, :, i])
-        input2_normalize[:, :, i] = (input2[:, :, i] - input2_min) / (input2_max - input2_min)
-
-    return input2_normalize
 
 
 class AverageMeter(object):
@@ -132,7 +142,6 @@ def accuracy(output, target, topk=(1,)):
         correct_k = correct[:k].view(-1).float().sum(0)
         res.append(correct_k.mul_(100.0 / batch_size))
     return res, target, pred.squeeze()
-
 
 def select_points(mask, num_classes, select_type, ratio=None, rngsd1=None):
 

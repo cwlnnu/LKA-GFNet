@@ -21,11 +21,12 @@ parser.add_argument('--learning_rate', type=float, default=1e-4, help='learning 
 parser.add_argument('--gamma', type=float, default=0.9, help='gamma')
 parser.add_argument('--weight_decay', type=float, default=0, help='weight_decay')
 parser.add_argument('--cuda', type=int, default=0, help="Specify CUDA device (defaults to -1, which learns on CPU)")
-parser.add_argument('--dataset', choices=['Augsburg_City', 'Beijing', 'Houston'], default='Houston', help='dataset to use')
-parser.add_argument('--num_classes', choices=[13, 13, 15], default=15, help='number of classes')
+parser.add_argument('--dataset', choices=['Augsburg_City', 'Beijing', 'Wuhan', 'Houston'],
+                    default='Augsburg_City', help='dataset to use')
+parser.add_argument('--num_classes', choices=[13, 13, 13, 15], default=13, help='number of classes')
 parser.add_argument('--flag_test', choices=['test', 'train', 'pretrain'], default='train', help='testing mark')
 parser.add_argument('--batch_size', type=int, default=64, help='number of batch size')
-parser.add_argument('--patch_size', type=int, default=9, help='number of patch size')
+parser.add_argument('--patch_size', type=int, default=11, help='number of patch size')
 
 args = parser.parse_args()
 DEVICE = get_device(args.cuda)
@@ -201,6 +202,14 @@ def train(model, train_loader, label_tokenize, loss_cal, optimizer):
         optimizer.step()
 
         # 决策融合
+        pred_1t = torch.argmax(softmax(y_pred_1), dim=1)
+        pred_2t = torch.argmax(softmax(y_pred_2), dim=1)
+        pred_3t = torch.argmax(softmax(y_pred_3), dim=1)
+
+        stacked = torch.stack([pred_1t, pred_2t, pred_3t], dim=0)
+        mode_values, mode_indices = torch.mode(stacked, dim=0)
+        mode_counts = torch.sum(stacked == mode_values.unsqueeze(0), dim=0)
+        final_result = torch.where(mode_counts >= 2, mode_values, pred_2t)
 
         prec1, t, p = accuracy(final_result, y, topk=(1,))
         n = X1.shape[0]
@@ -233,8 +242,15 @@ def test(model, test_loader, label_tokenize, loss_cal):
         loss_1 = loss_1 + loss_2 + loss_3
         loss = loss_1 + re_loss + loss_c
 
-
         # 决策融合
+        pred_1t = torch.argmax(softmax(y_pred_1), dim=1)
+        pred_2t = torch.argmax(softmax(y_pred_2), dim=1)
+        pred_3t = torch.argmax(softmax(y_pred_3), dim=1)
+
+        stacked = torch.stack([pred_1t, pred_2t, pred_3t], dim=0)
+        mode_values, mode_indices = torch.mode(stacked, dim=0)
+        mode_counts = torch.sum(stacked == mode_values.unsqueeze(0), dim=0)
+        final_result = torch.where(mode_counts >= 2, mode_values, pred_2t)
 
         prec1, t, p = accuracy(final_result, y, topk=(1,))
         n = X1.shape[0]
