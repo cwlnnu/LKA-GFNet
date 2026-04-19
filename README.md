@@ -1,3 +1,5 @@
+## Reference
+
 For a detailed description of the proposed method, including the motivation, framework, experimental settings, and analysis, please refer to our published paper: [LKA-GFNet: Language Knowledge-Augmented Graph Fusion for Tri-Source Heterogeneous Remote Sensing Data Classification](https://ieeexplore.ieee.org/document/11417191).
 
 If you find this repository helpful in your research or use our code in your work, please kindly cite our paper:
